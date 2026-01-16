@@ -1,10 +1,11 @@
-//TC = O(n - k)
+//TC = O(log(n-k) + k)
 //SC = O(1)
 
 /*
-Start with a window covering the entire array and shrink it until its size becomes k.
-At each step, remove the element farther from x by comparing both ends.
-Since the window shrinks n - k times, the time complexity is O(n - k).
+Initialize low = 0 and high = n-k, we want to find the starting range of the result.
+Once we calculate the mid, calculate the difference between x and mid and mid+k and x
+if distL > distR move low = mid + 1, which means that there is a possibility that the range might start after mid.
+Else move high = mid
 */
 
 import java.util.ArrayList;
@@ -12,21 +13,28 @@ import java.util.List;
 
 public class Problem2 {
     public List<Integer> findClosestElements(int[] arr, int k, int x) {
-        int left = 0;
-        int right = arr.length - 1;
+        int n = arr.length;
+        int low  = 0;
+        int high = n - k;
 
-        while((right - left + 1) != k) {
-            if(arr[left] - x >= x - arr[right]) {
-                right--;
+        while(low < high) {
+            int mid = low + (high-low)/2;
+            int distL = x - arr[mid];
+            int distR = arr[mid+k] - x;
+
+            if(distL > distR) {
+                low = mid + 1;
             } else {
-                left++;
+                high = mid;
             }
         }
 
         List<Integer> res = new ArrayList<>();
-        for(int i = left;i<=right;i++) {
+        for(int i = low;i<=low+k-1;i++) {
             res.add(arr[i]);
         }
+
         return res;
+        
     }
 }
